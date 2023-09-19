@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:to_do_list_app/sidebar_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,12 +22,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _loadUsername();
     return Scaffold(
+      
       appBar: AppBar(
         title: const Text('HomePage'),
       ),
       body: Center(
         child: Text('Halo, $user'),
       ),
+      drawer: const SidebarMenu(),
     );
   }
 }
