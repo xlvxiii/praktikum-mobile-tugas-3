@@ -14,6 +14,7 @@ class DbInstance {
         'create table tasks (id integer primary key, task text, is_done integer default 0)');
   }
 
+  // init
   static Future<Database> _database() async {
     return openDatabase('to_do_list_app.db', version: 1,
         onCreate: (Database database, int version) async {
