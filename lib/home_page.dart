@@ -14,7 +14,9 @@ class _HomePageState extends State<HomePage> {
   String? user;
 
   List<Map<String, dynamic>> tasks = [];
+  // loading screen
   bool isLoading = true;
+  bool isChecked = false;
 
   void _refreshTasks() async {
     final data = await DbInstance.getUndoneTasks();
@@ -31,6 +33,21 @@ class _HomePageState extends State<HomePage> {
       _taskController.text = '';
       // print('number of items = ${tasks.length}');
     }
+  }
+
+  void _deleteTask(int id) async {
+    await DbInstance.deleteTask(id);
+    _refreshTasks();
+  }
+
+  Future<void> _markComplete(int id) async {
+    await DbInstance.updateTask(id);
+    _refreshTasks();
+  }
+
+  Future<void> _undoTask(int id) async {
+    await DbInstance.undoTask(id);
+    _refreshTasks();
   }
 
   void _loadUsername() async {
@@ -63,13 +80,46 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) => Card(
               margin: const EdgeInsets.all(5),
               child: ListTile(
-                title: Text(tasks[index]['task']),
+                leading: SizedBox(
+                  width: 40,
+                  child: Checkbox(
+                      value: tasks[index]['is_done'] == 0 ? false : true,
+                      onChanged: (bool? value) => {
+                            if (tasks[index]['is_done'] == 0)
+                              {
+                                setState(() {
+                                  _markComplete(tasks[index]['id']);
+                                  // isChecked = value!;
+                                })
+                              }
+                            else
+                              {
+                                _undoTask(tasks[index]['id']),
+                                setState(
+                                  () {
+                                    // isChecked = value!;
+                                  },
+                                )
+                              }
+                          }),
+                ),
+                title: tasks[index]['is_done'] == 0
+                    ? Text(tasks[index]['task'])
+                    : Text(
+                        tasks[index]['task'],
+                        style: const TextStyle(
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                subtitle: (tasks[index]['is_done']) == 0
+                    ? const Text('Belum selesai')
+                    : const Text('Selesai'),
                 trailing: SizedBox(
                   width: 50,
                   child: Row(
                     children: [
                       IconButton(
-                          onPressed: () => null, icon: Icon(Icons.delete))
+                          onPressed: () => _deleteTask(tasks[index]['id']),
+                          icon: const Icon(Icons.delete)),
                     ],
                   ),
                 ),
@@ -82,10 +132,17 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                     child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.blue),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  ),
                   margin: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.only(left: 15),
                   child: TextField(
                     controller: _taskController,
-                    decoration: const InputDecoration(hintText: 'Tambah list'),
+                    decoration: const InputDecoration(
+                        hintText: 'Tambah list', border: InputBorder.none),
                   ),
                 )),
                 Container(

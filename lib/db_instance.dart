@@ -34,11 +34,35 @@ class DbInstance {
   // select
   static Future<List<Map<String, dynamic>>> getUndoneTasks() async {
     final db = await _database();
-    return db.query('tasks', where: 'is_done = ?', whereArgs: [0]);
+    // return db.query('tasks', where: 'is_done = ?', whereArgs: [0]);
+    return db.rawQuery('select * from tasks');
   }
 
+  // delete
   static Future<void> deleteTask(int id) async {
     final db = await _database();
     await db.delete('tasks', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // update undone task
+  static Future<int> updateTask(id) async {
+    final db = await _database();
+
+    final data = {'is_done': 1};
+    return await db.update('tasks', data, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // update undo complete task
+  static Future<int> undoTask(id) async {
+    final db = await _database();
+
+    final data = {'is_done': 0};
+    return await db.update('tasks', data, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // get task by id
+  static Future<List<Map<String, dynamic>>> getTask(int id) async {
+    final db = await _database();
+    return db.query('tasks', where: 'id = ?', whereArgs: [id]);
   }
 }
