@@ -31,11 +31,22 @@ class DbInstance {
     return id;
   }
 
-  // select
+  // select all
+  static Future<List<Map<String, dynamic>>> getTasks() async {
+    final db = await _database();
+    return db.rawQuery('select * from tasks');
+  }
+
+  // select done tasks
   static Future<List<Map<String, dynamic>>> getUndoneTasks() async {
     final db = await _database();
-    // return db.query('tasks', where: 'is_done = ?', whereArgs: [0]);
-    return db.rawQuery('select * from tasks');
+    return db.query('tasks', where: 'is_done = ?', whereArgs: [0]);
+  }
+
+  // select done tasks
+  static Future<List<Map<String, dynamic>>> getDoneTasks() async {
+    final db = await _database();
+    return db.query('tasks', where: 'is_done = ?', whereArgs: [1]);
   }
 
   // delete

@@ -14,15 +14,11 @@ class _HomePageState extends State<HomePage> {
   String? user;
 
   List<Map<String, dynamic>> tasks = [];
-  // loading screen
-  bool isLoading = true;
-  bool isChecked = false;
 
   void _refreshTasks() async {
-    final data = await DbInstance.getUndoneTasks();
+    final data = await DbInstance.getTasks();
     setState(() {
       tasks = data;
-      isLoading = false;
     });
   }
 
@@ -71,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     _loadUsername();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomePage'),
+        title: const Text('To Do List'),
       ),
       body: Stack(
         children: [
@@ -87,20 +83,11 @@ class _HomePageState extends State<HomePage> {
                       onChanged: (bool? value) => {
                             if (tasks[index]['is_done'] == 0)
                               {
-                                setState(() {
-                                  _markComplete(tasks[index]['id']);
-                                  // isChecked = value!;
-                                })
+                                _markComplete(tasks[index]['id']),
+                                setState(() {})
                               }
                             else
-                              {
-                                _undoTask(tasks[index]['id']),
-                                setState(
-                                  () {
-                                    // isChecked = value!;
-                                  },
-                                )
-                              }
+                              {_undoTask(tasks[index]['id']), setState(() {})}
                           }),
                 ),
                 title: tasks[index]['is_done'] == 0
