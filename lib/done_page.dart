@@ -6,7 +6,7 @@ class DonePage extends StatefulWidget {
   const DonePage({Key? key}) : super(key: key);
 
   @override
-  _DonePageState createState() => _DonePageState();
+  State<DonePage> createState() => _DonePageState();
 }
 
 class _DonePageState extends State<DonePage> {

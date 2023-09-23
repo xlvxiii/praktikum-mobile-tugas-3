@@ -1,8 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
 class DbInstance {
-  final String _dbName = 'to_do.db';
-  final int _dbVersion = 1;
 
   final String table = 'tasks';
   final String id = 'id';
